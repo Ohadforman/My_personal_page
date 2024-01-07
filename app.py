@@ -2,6 +2,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+
 # Replace this with your actual degree scores data
 degree_data = {
     'Semester 1': [
@@ -74,15 +75,15 @@ degree_data = {
 }
 @app.route('/')
 def index():
-    return render_template('index', degree_data=degree_data)
+    return render_template('index.html', degree_data=degree_data)
 
-@app.route('/Record_of_studies')
+@app.route('/Record_of_studies.html')
 def record_of_studies():
-    return render_template('record_of_studies', degree_data=degree_data)
+    return render_template('record_of_studies.html', degree_data=degree_data)
 
-@app.route('/cv')
+@app.route('/cv.html')
 def cv():
     return render_template('cv.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
