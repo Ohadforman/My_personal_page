@@ -74,11 +74,11 @@ degree_data = {
 }
 @app.route('/')
 def index():
-    return render_template('index.html', degree_data=degree_data)
+    return render_template('index', degree_data=degree_data)
 
 @app.route('/Record_of_studies')
 def record_of_studies():
-    return render_template('record_of_studies.html', degree_data=degree_data)
+    return render_template('record_of_studies', degree_data=degree_data)
 
 @app.route('/cv')
 def cv():
