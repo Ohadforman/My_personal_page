@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Degree Scores</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #222;
+            color: #fff;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #007BFF;
+            text-align: center;
+        }
+
+        .container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            padding: 10px 15px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            text-align: center;
+            background-color: #333;
+            border: 1px solid #555;
+        }
+
+        .button.active {
+            background-color: #007BFF; /* Blue */
+        }
+
+        .button:hover {
+            opacity: 0.8;
+        }
+
+        .average-info {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .semester-section {
+            margin-bottom: 30px;
+            background-color: #333;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .semester-table {
+            width: 48%;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        table {
+            width: 100%;
+            color: #fff;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #555;
+        }
+
+        th {
+            background-color: #444;
+        }
+
+        .marked-blue {
+            background-color: #007BFF; /* Blue */
+        }
+
+        /* Adjustments for fixed column widths */
+        .semester-table th:first-child,
+        .semester-table td:first-child,
+        .semester-table th:nth-child(2),
+        .semester-table td:nth-child(2),
+        .semester-table th:nth-child(3),
+        .semester-table td:nth-child(3) {
+            width: 33.33%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1> Ohad Forman Record of studies - B.sc EEE & Physics, Tel Aviv university</h1>
+
+    <div class="container">
+        <div class="buttons-container">
+            <button class="button" data-category="physics" onclick="markCourses('physics')">Physics Courses</button>
+            <button class="button" data-category="ee" onclick="markCourses('ee')">EEE Courses</button>
+            <button class="button" data-category="wave" onclick="markCourses('wave')">LAB Courses</button>
+            <button class="button" data-category="eewavesradiation" onclick="markCourses('eewavesradiation')">EM Waves and Radiation Specialty</button>
+            <button class="button" data-category="controltheory" onclick="markCourses('controltheory')">Control Theory Specialty</button>
+            <button class="button" data-category="programming" onclick="markCourses('programming')">Programming</button>
+        </div>
+
+        <div class="average-info">
+            <span>Average Score: <span id="average-score">N/A</span></span>
+            <span>Total Weight: <span id="total-weight">N/A</span></span>
+        </div>
+
+        <div class="semester-section">
+            {% for semester, courses in degree_data.items() %}
+            <div class="semester-table" id="{{ semester|replace(' ', '_') }}">
+                <table>
+                    <tr>
+                        <th colspan="3">{{ semester }}</th>
+                    </tr>
+                    <tr>
+                        <th>Course</th>
+                        <th>Score</th>
+                        <th>Weight</th>
+                    </tr>
+                    {% for entry in courses %}
+                    <tr class="course-row {% if entry.marked %} marked-blue {% endif %}" data-course="{{ entry.course }}">
+                        <td>{{ entry.course }}</td>
+                        <td class="score">{{ entry.score }}</td>
+                        <td class="weight">{{ entry.weight }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+
+        var lastClickedPath = '';
+
+        function markCourses(path) {
+            var markedCourses = getCoursesForPath(path);
+            var buttons = document.querySelectorAll('.button');
+
+            // Clear marks for the previous button if any
+            clearMarks(lastClickedPath);
+
+            // Toggle the 'active' class for the clicked button
+            buttons.forEach(function (button) {
+                if (button.dataset.category === path) {
+                    button.classList.toggle('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+
+            if (lastClickedPath === path) {
+                // If the same button is clicked again, clear the marks and style
+                lastClickedPath = '';
+            } else {
+                // Mark the courses for the clicked button
+                markedCourses.forEach(function (course) {
+                    var rows = document.querySelectorAll('.course-row[data-course="' + course + '"]');
+                    rows.forEach(function (row) {
+                        row.classList.add('marked-blue');
+                    });
+                });
+
+                lastClickedPath = path;
+            }
+
+            showMarkedCourses();
+        }
+
+        function clearMarks(path) {
+            var markedCourses = getCoursesForPath(path);
+
+            markedCourses.forEach(function (course) {
+                var rows = document.querySelectorAll('.course-row[data-course="' + course + '"]');
+                rows.forEach(function (row) {
+                    row.classList.remove('marked-blue');
+                });
+            });
+        }
+
+        function updateButtonStyle(path) {
+            var buttons = document.querySelectorAll('.button');
+            buttons.forEach(function (button) {
+                button.classList.remove('active');
+            });
+            var activeButton = document.querySelector('.button[data-category="' + path + '"]');
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+        }
+
+        function getCoursesForPath(path) {
+            if (path === 'physics') {
+                return ['Introductory Mathematics for Physicists1', 'Physics Laboratory A1', 'Classical Physics 1', 'Introductory Mathematics for Physicists 1', 'Calculus 1a for Physicists', 'Introduction to Thermodynamics and States of Matter', 'Physics Laboratory A2', 'Classical Physics 2', 'Special Relativity', 'Introductory Mathematics for Physicists 2', 'Analytical Mechanics', 'Physics Laboratory B1', 'Methods of Theoretical Physics 1', 'Thermal Physics', 'Physics Laboratory B2', 'Quantum Theory 1', 'Double Stars and Planets', 'Methods of Theoretical Physics 2', 'Physics Laboratory C-sem. B', 'Introduction to physical chemistry for physicists', 'Quantum Theory 2', 'Introduction to Solid State Physics', 'Introduction to Particles and Nuclei'];
+            } else if (path === 'ee') {
+                return ['Linear Algebra for Electrical Engineering', 'Programming - Python', 'Digital Logic Systems', 'Intr. to Probability and Statistics', 'Introduction to Devices', 'Linear Circuits and Systems', 'Electronic Devices', 'Electromagnetic Fields', 'Signals and Systems', 'Data Structures and Algorithms', 'Analog Electronic Circuits', 'Wave Transmission and Distributed Systems', 'Introduction to Control Theory', 'Electronics - Laboratory (1)', 'Digital Electronic Circuits', 'Electronics - Laboratory (2)', 'Electronics - Laboratory (3)', 'Microwave Engineering', 'Programming 2 - C', 'Project', 'Passive Microwave Devices', 'Space-systems Engineering', 'Numerical Analysis', 'Spectral Methods for Wavefields Excitation and Radiation', 'Random Signals and Noise', 'Practical Feedback Systems', 'A C Language Workshop', 'Introduction to opto-electronic devices', 'Advanced Laboratory for Microwaves', 'A C Languague Workshop'];
+            } else if (path === 'wave') {
+                return ['Physics Laboratory A1', 'Physics Laboratory A2', 'Physics Laboratory B1', 'Physics Laboratory B2', 'Physics Laboratory C-sem. B', 'Advanced Laboratory for Microwaves', 'Electronics - Laboratory (1)', 'Electronics - Laboratory (2)', 'Electronics - Laboratory (3)'];
+            } else if (path === 'eewavesradiation') {
+                return ['Advanced Laboratory for Microwaves', 'Spectral Methods for Wavefields Excitation and Radiation', 'Passive Microwave Devices', 'Microwave Engineering'];
+            } else if (path === 'controltheory') {
+                return ['Practical Feedback Systems', 'Project'];
+            } else if (path === 'programming') {
+                return ['A C Languague Workshop', 'Programming 2 - C', 'Programming - Python'];
+            }
+            return [];
+        }
+
+        function showMarkedCourses() {
+            var markedRows = document.querySelectorAll('.marked-blue');
+            var allRows = document.querySelectorAll('.course-row');
+            var averageScoreElement = document.getElementById('average-score');
+            var totalWeightElement = document.getElementById('total-weight');
+
+            if (markedRows.length > 0) {
+                allRows.forEach(function (row) {
+                    row.style.display = 'none';
+                });
+
+                markedRows.forEach(function (row) {
+                    row.style.display = '';
+                });
+
+                calculateAverages(markedRows);
+            } else {
+                // If nothing is marked, display all rows
+                allRows.forEach(function (row) {
+                    row.style.display = '';
+                });
+
+                calculateAverages(allRows);
+            }
+        }
+
+        function calculateAverages(rows) {
+            var totalScore = 0;
+            var totalWeight = 0;
+
+            rows.forEach(function (row) {
+                var score = parseFloat(row.querySelector('.score').textContent);
+                var weight = parseFloat(row.querySelector('.weight').textContent);
+
+                if (!isNaN(score)) {
+                    totalScore += score * weight;
+                    totalWeight += weight;
+                }
+            });
+
+            var averageScore = totalWeight !== 0 ? totalScore / totalWeight : 0;
+            document.getElementById('average-score').textContent = averageScore.toFixed(2);
+            document.getElementById('total-weight').textContent = totalWeight.toFixed(2);
+        }
+
+        // Automatically show marked courses on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            showMarkedCourses();
+        });
+    </script>
+
+</body>
+
+</html>

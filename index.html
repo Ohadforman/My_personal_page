@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ohad Forman's page</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #1a1a1a, #333);
+            color: #fff;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #4d94ff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+
+        .button {
+            padding: 15px 30px;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #4d94ff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-cv {
+            background-color: #333;
+        }
+
+        .button-record-of-studies {
+            background-color: #333;
+        }
+
+        #typed-text-container {
+            margin-top: 20px;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #typed-text {
+            color: #ddd;
+            font-size: 20px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to Ohad Forman's page</h1>
+
+    <div class="button-container">
+        <!-- Button to go to the CV page (replace '/cv' with the actual URL) -->
+        <a href="/cv" class="button button-cv">Go to CV Page</a>
+
+        <!-- Button to go to the Record of Studies page -->
+        <a href="/Record_of_studies" class="button button-record-of-studies">Go to Record of Studies Page</a>
+    </div>
+
+    <!-- Container for the typed text -->
+    <div id="typed-text-container">
+        <p id="typed-text"></p>
+    </div>
+
+    <script>
+        // Function to simulate typing effect
+        function typeText() {
+            const text = "Hello! I am Ohad Forman, a recent graduate with a B.Sc. in Electrical Engineering and Physics from Tel Aviv University. Currently pursuing my PART TIME M.Sc. in Physics at TAU, I am a dedicated and curious individual with a passion for exploring the realms of electromagnetism, radiation, and control systems. In addition to my academic achievements, I am an enthusiast of drones, motorbikes, and RC cars. I am actively seeking an entry position in the fields of electromagnetic waves and radiation, control systems, or a role suitable for a physics graduate. My love for programming has been an integral part of my academic journey, and I am adept at quickly adapting to new technologies. This webpage, created using ChatGPT without HTML knowledge, is a testament to my ability to embrace innovative solutions. Thank you for visiting my page!";
+            const speed = 50;
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    document.getElementById("typed-text").innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+
+            type();
+        }
+
+        // Call the typing function after the page is loaded
+        window.onload = typeText;
+    </script>
+</body>
+
+</html>
