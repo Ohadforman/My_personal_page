@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__)
 
 # Replace this with your actual degree scores data
 degree_data = {
